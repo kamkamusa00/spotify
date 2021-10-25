@@ -1,7 +1,27 @@
+.seccion{
+  height: calc(100% - 40px);
+}
+
 .selectedPlaylist{
   border-right: 0px;
   border-left:4px solid #027abf;
 }
+
+.aside-column{
+  display: flex;
+  flex-direction: column;
+}
+
+.head-group {
+  flex: 0 0 auto;
+}
+
+.group {
+  flex: 2 2 auto;
+  position: relative;
+  overflow-y: auto;
+  height: 0;
+ }
 
 .list-group-item{
   animation: appears ease-in-out .5s;

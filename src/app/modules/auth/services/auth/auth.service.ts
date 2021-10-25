@@ -102,13 +102,17 @@ export class AuthService {
   }
 
   private getRefreshToken(): void {
-    const url = authUrl + 'refresh_token';
+    console.log('refresh token');
+    const url = authUrl + 'api/token';
     const body = new URLSearchParams();
     body.set('grant_type', 'refresh_token');
+    body.set('client_id', client_id);
     body.set('refresh_token', this.token.refresh_token);
 
     this.http
-      .post<TokenI>(url, body.toString(), { headers: { ...headers } })
+      .post<TokenI>(url, body.toString(), {
+        headers
+      })
       .pipe(
         map((token: TokenI) => ({ ...token, date: new Date() })) //add the time it recieves token
       )
@@ -136,7 +140,7 @@ export class AuthService {
     if (this.code) {
       return;
     }
-    const code = getQueryParam(activeRoute, 'code') || '';
+    const code = getQueryParam(activeRoute, 'code');
     if (code) {
       this.code = code;
     }
@@ -145,9 +149,8 @@ export class AuthService {
   private setTimeOutRefresh(): boolean {
     const timeToExpire = getTimeToExpire(this.token);
     const oneMinuteInMs = 1 * 60 * 1000;
-    //const timeToRefresh = timeToExpire - oneMinuteInMs;
+    const timeToRefresh = timeToExpire - oneMinuteInMs;
     if (timeToExpire) {
-      const timeToRefresh = oneMinuteInMs * 10;
       setTimeout(() => {
         this.getRefreshToken();
       }, timeToRefresh);

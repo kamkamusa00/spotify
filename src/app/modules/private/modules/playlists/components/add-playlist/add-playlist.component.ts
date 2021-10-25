@@ -62,7 +62,10 @@ export class AddPlaylistComponent {
 
   private initForm(): void {
     this.form = this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(5)]]
+      name: [
+        '',
+        [Validators.required, Validators.maxLength(12), Validators.minLength(3)]
+      ]
     });
   }
 }

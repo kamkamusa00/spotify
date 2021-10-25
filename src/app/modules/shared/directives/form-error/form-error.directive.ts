@@ -84,6 +84,7 @@ export class FormErrorDirective implements AfterViewInit {
     if (this.isSameError()) {
       return;
     }
+    this.hideError();
     const fieldContainer = this.elementRef.nativeElement.closest('.field');
     this.errorContainer = document.createElement('div');
     this.errorContainer.classList.add('alert', 'alert-danger', 'p-1', 'fs-7');
@@ -94,9 +95,11 @@ export class FormErrorDirective implements AfterViewInit {
   }
 
   private hideError(): void {
-    const fieldContainer = this.elementRef.nativeElement.closest('.field');
-    this.renderer2.removeChild(fieldContainer, this.errorContainer);
-    this.domErrorText = '';
+    if (this.domErrorText) {
+      const fieldContainer = this.elementRef.nativeElement.closest('.field');
+      this.renderer2.removeChild(fieldContainer, this.errorContainer);
+      this.domErrorText = '';
+    }
   }
 
   private isSameError(): boolean {
@@ -108,6 +111,7 @@ export class FormErrorDirective implements AfterViewInit {
       this.setError();
       this.showError();
     } else if (this.domErrorText) {
+      this.errorText = '';
       this.hideError();
     }
   }
