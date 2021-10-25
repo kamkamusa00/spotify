@@ -1,0 +1,13 @@
+.selectedPlaylist{
+  border-right: 0px;
+  border-left:4px solid #027abf;
+}
+
+.list-group-item{
+  animation: appears ease-in-out .5s;
+}
+
+@keyframes appears {
+  from {background-color: #c1d716;}
+  to {background-color: white;}
+}

@@ -1,0 +1,23 @@
+<h3>songs</h3>
+<hr />
+<div *ngIf="playlist?.items?.length" class="songs">
+  <div class="row mb-2">
+    <div class="col-3"><strong>id</strong></div>
+    <div class="col-3"><strong>nombre</strong></div>
+    <div class="col-3"><strong>duración (seg)</strong></div>
+    <div class="col-3"><strong>artistas</strong></div>
+  </div>
+  <div class="row" *ngFor="let track of playlist?.items; trackBy:trackById">
+    <div class="col-3">{{ track.track.id }}</div>
+    <div class="col-3">{{ track.track.name }}</div>
+    <div class="col-3">{{ track.track.duration_ms / 1000 }}</div>
+    <div class="col-3">
+      <span *ngFor="let artist of track.track.artists">
+        {{ artist.name }},
+      </span>
+    </div>
+  </div>
+</div>
+<div *ngIf="!playlist?.items?.length">
+  No existen elementos en la playlist seleccionada
+</div>
