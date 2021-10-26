@@ -47,7 +47,7 @@ export class PlaylistsComponent implements OnInit {
     this.playListService.getCurrentUserPlaylists().subscribe(
       (playLists: PlaylistI[]) => {
         this.selectedPlayLists = new Array<boolean>(playLists.length);
-        this.playLists = playLists;
+        this.playLists = [...playLists];
         this.changeDetector.detectChanges();
       },
       (error: HttpErrorResponse) => this.errorManager.showError(error)

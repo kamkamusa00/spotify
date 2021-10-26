@@ -7,7 +7,7 @@
     <div class="col-3"><strong>duración (seg)</strong></div>
     <div class="col-3"><strong>artistas</strong></div>
   </div>
-  <div class="row" *ngFor="let track of playlist?.items; trackBy:trackById">
+  <div class="row" *ngFor="let track of playlist?.items; trackBy:trackById ">
     <div class="col-3">{{ track.track.id }}</div>
     <div class="col-3">{{ track.track.name }}</div>
     <div class="col-3">{{ track.track.duration_ms / 1000 }}</div>
