@@ -59,9 +59,7 @@ export class FormErrorDirective implements AfterViewInit {
     this.parent.control.statusChanges
       .pipe(untilDestroyed(this))
       .subscribe(() => {
-        6;
         this.onControlChange();
-        const formGroup = this.parent?.control as FormSubmitGroupI;
       });
   }
 
@@ -117,7 +115,7 @@ export class FormErrorDirective implements AfterViewInit {
   }
 
   private setError(): void {
-    const controlErrors = this.control!.errors;
+    const controlErrors = this.control?.errors;
     const errorKey = getLastErrorKey(controlErrors);
     const errorValue = this.control.errors[errorKey];
     const errorFn = VALIDATORS_ERROR_MESSAGES?.[errorKey];
