@@ -19,6 +19,14 @@
         "quotes": [
             "error",
             "single"
-        ]
+        ],
+        "no-empty-function": ["error", { "allow": ["constructors"] }],
+        "comma-dangle": ["warm", {
+          "arrays": "never",
+          "objects": "always",
+          "imports": "always",
+          "exports": "always",
+          "functions": "never"
+      }]
     }
 }

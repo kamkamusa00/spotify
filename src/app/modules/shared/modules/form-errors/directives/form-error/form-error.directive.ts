@@ -5,30 +5,38 @@ import {
   HostListener,
   Optional,
   Host,
-  ElementRef,
-  Renderer2
+  ViewContainerRef,
+  ComponentRef,
+  ComponentFactoryResolver
 } from '@angular/core';
 import { ControlContainer, NgControl } from '@angular/forms';
-import { VALIDATORS_ERROR_MESSAGES } from '@shared/consts/validation-error-messages';
 
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { FormSubmitGroupI } from '@shared/model/form-submit-group.model';
+import { FormSubmitGroupI } from '@shared/modules/form-errors/model/form-submit-group.model';
+import { ErrorTextComponent } from '../../components/error-text/error-text.component';
+import { VALIDATORS_ERROR_MESSAGES } from '../../consts/validation-error-messages';
+import { ErrorAfterThis } from '../error-after-this/error-after-this.directive';
 
 @UntilDestroy()
 @Directive({
   selector: '[controlFormError]'
 })
 export class FormErrorDirective implements AfterViewInit {
-  errorText = '';
   domErrorText = '';
-  errorContainer: HTMLElement;
+  ref: ComponentRef<ErrorTextComponent>;
+  errorPositionRef: ViewContainerRef;
 
   constructor(
     @Self() private control: NgControl,
     @Optional() @Host() private parent: ControlContainer, // needed for know if form is submitted
-    private elementRef: ElementRef<HTMLElement>,
-    private renderer2: Renderer2
-  ) {}
+    @Optional() @Host() private errorAfterThis: ErrorAfterThis, // needed for know where push error
+    private viewConRef: ViewContainerRef,
+    private cfr: ComponentFactoryResolver
+  ) {
+    this.errorPositionRef = this.errorAfterThis
+      ? this.errorAfterThis.viewConRef
+      : this.viewConRef;
+  }
 
   @HostListener('focus') focus(): void {
     this.onFocus();
@@ -78,38 +86,26 @@ export class FormErrorDirective implements AfterViewInit {
     );
   }
 
-  private showError(): void {
-    if (this.isSameError()) {
-      return;
+  private showError(errorText: string): void {
+    console.log(errorText);
+    if (!this.ref) {
+      const factory = this.cfr.resolveComponentFactory(ErrorTextComponent);
+      this.ref = this.errorPositionRef.createComponent(factory);
     }
-    this.hideError();
-    const fieldContainer = this.elementRef.nativeElement.closest('.field');
-    this.errorContainer = document.createElement('div');
-    this.errorContainer.classList.add('alert', 'alert-danger', 'p-1', 'fs-7');
-    const textNode = document.createTextNode(this.errorText);
-    this.errorContainer.appendChild(textNode);
-    this.renderer2.appendChild(fieldContainer, this.errorContainer);
-    this.domErrorText = this.errorText;
+    this.ref.instance.text = errorText;
   }
 
   private hideError(): void {
-    if (this.domErrorText) {
-      const fieldContainer = this.elementRef.nativeElement.closest('.field');
-      this.renderer2.removeChild(fieldContainer, this.errorContainer);
-      this.domErrorText = '';
+    if (this.ref) {
+      this.errorPositionRef.clear();
+      this.ref = null;
     }
-  }
-
-  private isSameError(): boolean {
-    return this.domErrorText === this.errorText;
   }
 
   private onControlChange(): void {
     if (this.hasErrors()) {
       this.setError();
-      this.showError();
-    } else if (this.domErrorText) {
-      this.errorText = '';
+    } else if (this.ref?.instance?.text) {
       this.hideError();
     }
   }
@@ -120,7 +116,8 @@ export class FormErrorDirective implements AfterViewInit {
     const errorValue = this.control.errors[errorKey];
     const errorFn = VALIDATORS_ERROR_MESSAGES?.[errorKey];
     if (errorFn) {
-      this.errorText = errorFn(errorValue);
+      const errorText = errorFn(errorValue);
+      this.showError(errorText);
     }
   }
 

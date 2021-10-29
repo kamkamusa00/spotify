@@ -6,7 +6,7 @@ import {
   Output
 } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { FormSubmitGroupI } from '@shared/model/form-submit-group.model';
+import { FormSubmitGroupI } from '@shared/modules/form-errors/model/form-submit-group.model';
 import { UserI } from 'src/app/modules/auth/models/user.model';
 import { ErrorManagerService } from 'src/app/modules/core/services/error-manager/error-manager.service';
 import { UserService } from 'src/app/modules/core/services/user/user.service';
